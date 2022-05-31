@@ -19,5 +19,5 @@ public class OrderDetailId implements Serializable {  //sử dụng serializable
     private String orderId;
 
     @Column(name = "product_id")
-    private Long productId;
+    private Integer productId;
 }

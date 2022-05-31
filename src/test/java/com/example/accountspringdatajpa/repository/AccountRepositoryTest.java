@@ -66,12 +66,12 @@ public class AccountRepositoryTest {
     @Test
     public void beforeProduct1() throws Exception {
         Category category = new Category();
-        category.setId((long) 1);
+        category.setId(1L);
         category.setTitle("title1");
         categoryRepository.save(category);
 
         Product product = new Product();
-        product.setId((long)1);
+        product.setId(1);
         product.setDetail("detail1");
         product.setThumbnail("title1");
         product.setStatus(ProductSimpleStatus.ACTIVE);

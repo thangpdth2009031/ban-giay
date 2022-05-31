@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface ProductRepository extends JpaRepository<Product, Long>, JpaSpecificationExecutor<Product> {
+public interface ProductRepository extends JpaRepository<Product, Integer>, JpaSpecificationExecutor<Product> {
     Page<Product> findAll(Pageable pageable);
 //    Page<Product> findAllAndFilter(SearchBody searchBody){
 //        Specification specification = Specification.where(null);

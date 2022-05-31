@@ -1,5 +1,6 @@
 package com.example.accountspringdatajpa.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.*;
 
@@ -16,12 +17,15 @@ import java.math.BigDecimal;
 public class CartItem {
     @EmbeddedId
     private CartItemId id = new CartItemId();
-    private String productName; // đỡ truy vấn ngược
-    private String productImage;
+    @OneToOne
+    @JoinColumn(name = "product_id",referencedColumnName = "id")
+    @MapsId("productId")
+    private Product product;
     private int quantity;
-    private BigDecimal unitPrice;
-    @ManyToOne(cascade = CascadeType.ALL)
+    private BigDecimal total;
+    @ManyToOne
     @MapsId("shoppingCartId")
     @JoinColumn(name = "shopping_cart_id")
+    @JsonBackReference
     private ShoppingCart shoppingCart;
 }

@@ -29,8 +29,8 @@ public class OrderSpecification implements Specification<Order> {
                         root.get(criteria.getKey()),
                         String.valueOf(criteria.getValue()));
             case GREATER_THAN_OR_EQUALS:
-                if (root.get(criteria.getKey()).getJavaType() == LocalDateTime.class) {
-                    return criteriaBuilder.greaterThanOrEqualTo(root.get(criteria.getKey()), (LocalDateTime)criteria.getValue());
+                if (root.get(criteria.getKey()).getJavaType() == LocalDate.class) {
+                    return criteriaBuilder.greaterThanOrEqualTo(root.get(criteria.getKey()), (LocalDate)criteria.getValue());
                 } else {
                     return criteriaBuilder.greaterThanOrEqualTo(root.get(criteria.getKey()), criteria.getValue().toString());
                 }
@@ -39,8 +39,8 @@ public class OrderSpecification implements Specification<Order> {
                         root.get(criteria.getKey()),
                         String.valueOf(criteria.getValue()));
             case LESS_THAN_OR_EQUALS:
-                if (root.get(criteria.getKey()).getJavaType() == LocalDateTime.class) {
-                    return criteriaBuilder.lessThanOrEqualTo(root.get(criteria.getKey()), (LocalDateTime)criteria.getValue());
+                if (root.get(criteria.getKey()).getJavaType() == LocalDate.class) {
+                    return criteriaBuilder.lessThanOrEqualTo(root.get(criteria.getKey()), (LocalDate)criteria.getValue());
                 } else {
                     return criteriaBuilder.lessThanOrEqualTo(root.get(criteria.getKey()), criteria.getValue().toString());
                 }
@@ -50,11 +50,11 @@ public class OrderSpecification implements Specification<Order> {
                         // tìm trong order bản ghi có id giống giá trị truyền vào
 //                        criteriaBuilder.like(root.get("id"), "%" + criteria.getValue() + "%"),
                         // hoặc tìm trong bảng product bản ghi có name giống với giá trị
-                        criteriaBuilder.like(orderDetailProductJoin.get("name"), "%" + criteria.getValue() + "%")
+                        criteriaBuilder.like(orderDetailProductJoin.get(criteria.getKey()), "%" + criteria.getValue() + "%")
                 );
                 return predicate;
             case USER_JOIN_LIKE:
-                Join<Account, Order> accountOrderJoin = root.join("account");
+                From<Order, Account> accountOrderJoin = root.join("account");
                 return criteriaBuilder.like(accountOrderJoin.get(criteria.getKey()), "%" + criteria.getValue() + "%");
         }
         return null;

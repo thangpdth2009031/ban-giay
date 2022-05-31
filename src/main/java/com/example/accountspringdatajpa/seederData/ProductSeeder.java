@@ -6,13 +6,13 @@ import com.example.accountspringdatajpa.repository.*;
 import com.github.javafaker.Faker;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
-import org.springframework.data.jpa.convert.threeten.Jsr310JpaConverters;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.concurrent.ThreadLocalRandom;
 
 //@Component
 public class ProductSeeder implements CommandLineRunner {
@@ -27,9 +27,13 @@ public class ProductSeeder implements CommandLineRunner {
     OrderRepository orderRepository;
     @Autowired
     OrderDetailRepository orderDetailRepository;
-
+    @Autowired
+    RoleRepository roleRepository;
+    private static final String USER_ROLE = "user";
+    private static final String ADMIN_ROLE = "admin";
     @Override
     public void run(String... args) throws Exception {
+        seedRole();
         seedAccount();
         seedCategory();
         seedProduct();
@@ -51,6 +55,12 @@ public class ProductSeeder implements CommandLineRunner {
             categories.add(category);
         }
         categoryRepository.saveAll(categories);
+    }
+    public void seedRole() {
+        Role role = new Role();
+        role.setId(1);
+        role.setName("user");
+        roleRepository.save(role);
     }
 
     //Lọc theo tên sản phẩm, tên ngươif dùng, trong khoangr thời gian, trong khoảng giá,
@@ -88,6 +98,7 @@ public class ProductSeeder implements CommandLineRunner {
             account.setFullName(fullName);
             account.setAddress(faker.address().streetAddress());
             account.setStatus(ProductSimpleStatus.ACTIVE);
+            account.setRole(roleRepository.findByName(USER_ROLE).get());
             accounts.add(account);
         }
         accountRepository.saveAll(accounts);
@@ -96,21 +107,25 @@ public class ProductSeeder implements CommandLineRunner {
     public void seedOrder() {
         List<Order> orders = new ArrayList<>();
         List<OrderDetail> orderDetails = new ArrayList<>();
-        boolean existProduct = false;
-        for (int i = 1; i <= 100; i++) {
-            Order order = new Order();
 
+
+        boolean existProduct = false;
+        for (int i = 1; i <= 1000; i++) {
+            Order order = new Order();
+            long minDay = LocalDate.of(2015, 1, 31).toEpochDay();
+            long maxDay = LocalDate.of(2022, 12, 31).toEpochDay();
+            long randomDay = ThreadLocalRandom.current().nextLong(minDay, maxDay);
+            LocalDate randomDate = LocalDate.ofEpochDay(randomDay);
             long total = 0;
             int orderDetailNumber = faker.number().numberBetween(1, 5);
             order.setStatus(ProductSimpleStatus.ACTIVE);
             int userId = faker.number().numberBetween(1, 100);
-            order.setUserId((long) userId);
-            order.setAccount(accountRepository.findById((long) userId).get());
+            order.setUser(accountRepository.findById(userId).get());
             for (int j = 0; j < orderDetailNumber; j++) {
                 int productId = faker.number().numberBetween(1, 100);
                 for (OrderDetail od :
                         orderDetails) {
-                    if (od.getProduct().getId() == productId && od.getOrder().getAccount().getId() == userId) {
+                    if (od.getProduct().getId() == productId && od.getOrder().getUser().getId() == userId) {
                         existProduct = true;
                         break;
                     }
@@ -121,17 +136,17 @@ public class ProductSeeder implements CommandLineRunner {
                     continue;
                 }
                 OrderDetail orderDetail = new OrderDetail();
-                Product product = productRepository.findById((long) productId).get();
+                Product product = productRepository.findById(productId).get();
                 int quantity = faker.number().numberBetween(1, 5);
                 orderDetail.setProduct(product);
                 orderDetail.setOrder(order);
                 orderDetail.setQuantity(quantity);
-                long unitPrice = (long) quantity * product.getPrice().intValue();
+                long unitPrice = product.getPrice().longValue();
                 orderDetail.setUnitPrice(new BigDecimal(unitPrice));
-                total += unitPrice;
+                total += (unitPrice * quantity) ;
                 orderDetails.add(orderDetail);
             }
-            order.setCreatedAt(LocalDateTime.now());
+            order.setCreatedAt(randomDate);
             order.setTotalPrice(new BigDecimal(total));
             orders.add(order);
             if (i % 20 == 0) {

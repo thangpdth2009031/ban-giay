@@ -10,6 +10,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -23,29 +25,30 @@ public class OrderService {
         if (searchBody.getStatus() != -1){
             specification = specification.and(new OrderSpecification(new SearchCriteria("status", SearchCriteriaOperator.EQUALS, searchBody.getStatus())));
         }
-        if (searchBody.getStartDate() != null && !searchBody.getStartDate().equals("")){
-            LocalDateTime startDate = HelpConvertDate.toLocalDateTime(searchBody.getStartDate(), true);
+        if (searchBody.getStartDate() != null && searchBody.getStartDate().length() > 0){
+            LocalDate startDate = HelpConvertDate.toLocalDateTime(searchBody.getStartDate(), true);
             specification = specification.and(new OrderSpecification(new SearchCriteria("createdAt", SearchCriteriaOperator.GREATER_THAN_OR_EQUALS,startDate)));
         }
-        if (searchBody.getEndDate() != null && !searchBody.getEndDate().equals("")){
-            LocalDateTime endDate = HelpConvertDate.toLocalDateTime(searchBody.getEndDate(), false);
+        if (searchBody.getEndDate() != null && searchBody.getEndDate().length() > 0){
+            LocalDate endDate = HelpConvertDate.toLocalDateTime(searchBody.getEndDate(), false);
             specification = specification.and(new OrderSpecification(new SearchCriteria("createdAt", SearchCriteriaOperator.LESS_THAN_OR_EQUALS,endDate)));
         }
-        if (searchBody.getOrderId()!= null && !searchBody.getOrderId().equals("")){
+        if (searchBody.getOrderId()!= null && searchBody.getOrderId().length() > 0){
             specification = specification.and(new OrderSpecification(new SearchCriteria("id", SearchCriteriaOperator.EQUALS,searchBody.getOrderId().trim())));
         }
-        if (searchBody.getProductName()!= null && !searchBody.getProductName().equals("")){
-            specification = specification.and(new OrderSpecification(new SearchCriteria("", SearchCriteriaOperator.PRODUCT_JOIN_PRODUCT_NAME_LIKE,searchBody.getProductName().trim())));
+        if (searchBody.getProductName()!= null && searchBody.getProductName().length() > 0){
+            specification = specification.and(new OrderSpecification(new SearchCriteria("name", SearchCriteriaOperator.PRODUCT_JOIN_PRODUCT_NAME_LIKE,searchBody.getProductName().trim())));
         }
-        if (searchBody.getCustomerName()!= null && !searchBody.getCustomerName().equals("")){
+        if (searchBody.getCustomerName()!= null && searchBody.getCustomerName().length() > 0){
             specification = specification.and(new OrderSpecification(new SearchCriteria("fullName", SearchCriteriaOperator.USER_JOIN_LIKE, searchBody.getCustomerName().trim())));
         }
-        if (searchBody.getCustomerPhone()!= null && !searchBody.getCustomerPhone().equals("")){
+        if (searchBody.getCustomerPhone()!= null && searchBody.getCustomerPhone().length() > 0){
             specification = specification.and(new OrderSpecification(new SearchCriteria("phone", SearchCriteriaOperator.USER_JOIN_LIKE, searchBody.getCustomerPhone().trim())));
         }
-        if (searchBody.getCustomerEmail()!= null && !searchBody.getCustomerEmail().equals("")){
+        if (searchBody.getCustomerEmail()!= null && searchBody.getCustomerEmail().length() > 0){
             specification = specification.and(new OrderSpecification(new SearchCriteria("email", SearchCriteriaOperator.USER_JOIN_LIKE, searchBody.getCustomerEmail().trim())));
         }
+
 
         List<Sort.Order> orders = new ArrayList<>();
         Sort.Order order;

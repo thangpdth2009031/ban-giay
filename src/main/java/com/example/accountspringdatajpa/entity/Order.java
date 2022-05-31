@@ -31,26 +31,20 @@ public class Order extends BaseEntity {
     @GeneratedValue(generator = "uuid")
     @GenericGenerator(name = "uuid", strategy = "uuid2")
     private String id;
-
-    @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
-    private Account account;
-
-
-    @Column(name = "user_id", updatable = false, insertable = false)
-    private Long userId;
-    private LocalDateTime createdAt;
+    private LocalDate createdAt;
     private BigDecimal totalPrice;
     @Enumerated(EnumType.ORDINAL)
     private ProductSimpleStatus status;
-
     @OneToMany(mappedBy = "order",
             cascade = CascadeType.ALL,//Khi sửa, làm tren thằng này thì nó sẽ tương tác và thay đổi tất cả các thằng liên quan (detach trong cascade: save ,... thì cac thằng liên quan không ảnh hưởng, fetch: lazy, eager)
             fetch = FetchType.LAZY)
 //    @OneToMany(mappedBy = "order")
     @JsonManagedReference
     private Set<OrderDetail> orderDetails;
-
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false,foreignKey = @ForeignKey(name = "user_order_fk"))
+    @JsonManagedReference
+    private Account user;
     public void addTotalPrice(OrderDetail orderDetail) {
         if (this.totalPrice == null) {
             this.totalPrice = new BigDecimal(0);

@@ -107,7 +107,7 @@ public class ProductApi {
     }
 
     @RequestMapping(method = RequestMethod.GET, path = "{id}")
-    public ResponseEntity<?> getDetail(@PathVariable Long id) {
+    public ResponseEntity<?> getDetail(@PathVariable Integer id) {
         Optional<Product> optionalProduct = productService.findById(id);
         if (!optionalProduct.isPresent()) {
             ResponseEntity.badRequest().build();
@@ -122,7 +122,7 @@ public class ProductApi {
     }
 
     @RequestMapping(method = RequestMethod.PUT, path = "{id}")
-    public ResponseEntity<Product> update(@PathVariable Long id, @RequestBody Product product) {
+    public ResponseEntity<Product> update(@PathVariable Integer id, @RequestBody Product product) {
         Optional<Product> optionalProduct = productService.findById(id);
         if (!optionalProduct.isPresent()) {
             ResponseEntity.badRequest().build();
@@ -136,7 +136,7 @@ public class ProductApi {
     }
 
     @RequestMapping(method = RequestMethod.DELETE, path = "{id}")
-    public ResponseEntity<?> delete(@PathVariable Long id) {
+    public ResponseEntity<?> delete(@PathVariable Integer id) {
         if (!productService.findById(id).isPresent()) {
             ResponseEntity.badRequest().build();
         }

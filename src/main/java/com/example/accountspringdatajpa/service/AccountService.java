@@ -18,7 +18,7 @@ public class AccountService {
         return accountRepository.findAll();
     }
 
-    public Optional<Account> findById(Long id) {
+    public Optional<Account> findById(Integer id) {
         return accountRepository.findById(id);
     }
 
@@ -26,7 +26,7 @@ public class AccountService {
         return accountRepository.save(account);
     }
 
-    public void deleteById(Long id) {
+    public void deleteById(Integer id) {
         accountRepository.deleteById(id);
     }
 

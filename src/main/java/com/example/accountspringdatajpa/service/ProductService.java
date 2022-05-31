@@ -81,7 +81,7 @@ public class ProductService {
 //        return listProducts;
 //    }
 
-    public Optional<Product> findById(Long id) {
+    public Optional<Product> findById(Integer id) {
         Optional<Product> product = productRepository.findById(id);
         if (!product.isPresent()) {
             throw new NotFoundException("khong tim thay product");
@@ -100,7 +100,7 @@ public class ProductService {
         }
         return product;
     }
-    public void deleteById(Long id) {
+    public void deleteById(Integer id) {
         productRepository.deleteById(id);
     }
 }

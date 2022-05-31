@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public abstract class BaseEntity {
     @CreatedDate
-    private LocalDateTime createdAt;
+    private LocalDate createdAt;
     @LastModifiedDate
     private LocalDateTime updatedAt;
     private LocalDateTime deletedAt;

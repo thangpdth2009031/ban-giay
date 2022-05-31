@@ -21,7 +21,7 @@ public class AccountApi {
     }
 
     @RequestMapping(method = RequestMethod.GET, path = "{id}")
-    public ResponseEntity<?> getDetail(@PathVariable Long id) {
+    public ResponseEntity<?> getDetail(@PathVariable Integer id) {
         Optional<Account> optionalAccount = accountService.findById(id);
         if (!optionalAccount.isPresent()) {
             ResponseEntity.badRequest().build();
@@ -35,7 +35,7 @@ public class AccountApi {
     }
 
     @RequestMapping(method = RequestMethod.PUT, path = "{id}")
-    public ResponseEntity<Account> update(@PathVariable Long id, @RequestBody Account account) {
+    public ResponseEntity<Account> update(@PathVariable Integer id, @RequestBody Account account) {
         Optional<Account> optionalAccount = accountService.findById(id);
         if (!optionalAccount.isPresent()) {
             ResponseEntity.badRequest().build();
@@ -48,7 +48,7 @@ public class AccountApi {
     }
 
     @RequestMapping(method = RequestMethod.DELETE, path = "{id}")
-    public ResponseEntity<?> delete(@PathVariable Long id) {
+    public ResponseEntity<?> delete(@PathVariable Integer id) {
         if (!accountService.findById(id).isPresent()) {
             ResponseEntity.badRequest().build();
         }
